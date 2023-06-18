@@ -15,20 +15,18 @@ async def hello(ctx):
 @bot.command()
 async def heh(ctx, count_heh = 5):
     await ctx.send("he" * count_heh)
-    async def on_message(self, message):
-        if message.content.startswith('!deleteme'):
-            msg = await message.channel.send('I will delete myself now...')
-            await msg.delete()
 
-            # this also works
-            await message.channel.send('Goodbye in 3 seconds...', delete_after=3.0)
+@bot.command()
+@commands.has_permissions(ban_members=True)
+async def ban(ctx, member: discord.Member):
+    await member.ban()
+    await ctx.send(f'{member.name} был забанен!')
 
-    async def on_message_delete(self, message):
-        msg = f'{message.author} has deleted the message: {message.content}'
-        await message.channel.send(msg)
+@bot.command()
+@commands.has_permissions(manage_roles=True)
+async def mute(ctx, member: discord.Member):
+    muted_role = discord.utils.get(ctx.guild.roles, name='Muted')
+    await member.add_roles(muted_role)
+    await ctx.send(f'{member.name} был замучен!')bot.run("token")
 
-
-intents = discord.Intents.default()
-intents.message_content = True
-client = MyClient(intents=intents)
-bot.run("token")
+bot.run('token')
